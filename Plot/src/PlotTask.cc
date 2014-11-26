@@ -33,6 +33,8 @@ PlotTask::PlotTask(TaskSamples *taskSamples, const double lumi) :
   fDataHist    (0),
   fHistMinimum (0),
   fHistMaximum (0),
+  fVarBins     (false),
+  fHistXBins   (0),
   fHistXMinimum(0),
   fHistXMaximum(0),
   fAxisTitleX  (""),
@@ -127,7 +129,12 @@ void PlotTask::DrawFrame()
   }
 
   // draw the frame
-  TH1D *hTmp = new TH1D("FRAME","FRAME",fNBins,fHistXMinimum,fHistXMaximum);
+  TH1D *hTmp = 0;
+  if (!fVarBins)
+    hTmp = new TH1D("FRAME","FRAME",fNBins,fHistXMinimum,fHistXMaximum);
+  else 
+    hTmp = new TH1D("FRAME","FRAME",fNBins,fHistXBins);  
+  
   MitStyle::InitHist(hTmp,fAxisTitleX.Data(),fAxisTitleY.Data(),kBlack);
   if (fHistMinimum != 0)
     hTmp->SetMinimum(fHistMinimum);
@@ -226,7 +233,11 @@ void PlotTask::CollectNormalized(const char* hist)
     fAxisTitleX = TString(hist);
 
   // loop through samples and collect all histograms
-  TH1D *hTmp = new TH1D("TMP","TMP",fNBins,fHistXMinimum,fHistXMaximum);
+  TH1D *hTmp = 0;
+  if (!fVarBins)
+    hTmp = new TH1D("TMP","TMP",fNBins,fHistXMinimum,fHistXMaximum);
+  else 
+    hTmp = new TH1D("TMP","TMP",fNBins,fHistXBins);  
   Bool_t first  = kTRUE;
   for (UInt_t i=0; i<fHists.size(); i++) {
     const Sample *s = fTask->GetSample(i);
@@ -264,7 +275,12 @@ void PlotTask::CollectContributions(const char* hist)
     fAxisTitleX = TString(hist);
 
   // prepare a temporary histogram for stacked contributions according to legend
-  TH1D *hTmp = new TH1D("TMP","TMP",fNBins,fHistXMinimum,fHistXMaximum);
+  TH1D *hTmp = 0;
+  if (!fVarBins)
+    hTmp = new TH1D("TMP","TMP",fNBins,fHistXMinimum,fHistXMaximum);
+  else
+    hTmp = new TH1D("TMP","TMP",fNBins,fHistXBins);
+
   // loop through samples and collect all histograms
   Bool_t first  = kTRUE;
   for (UInt_t i=0; i<fHists.size(); i++) {
@@ -490,7 +506,10 @@ void PlotTask::ScaleHistograms(const char* hist)
       
       TString histname("htempmc_");
       histname += *s->Name();
-      h = new TH1D(histname,histname,fNBins,fHistXMinimum,fHistXMaximum);
+      if (!fVarBins)
+        h = new TH1D(histname,histname,fNBins,fHistXMinimum,fHistXMaximum);
+      else 
+        h = new TH1D(histname,histname,fNBins,fHistXBins);      
       TString drawexp = fDrawExp + TString(">>") + histname;
       htree->Draw(drawexp,fSelExp);
     }
@@ -594,7 +613,10 @@ void PlotTask::ScaleHistograms(const char* hist)
           
           TString histname("htempdata_");
           histname += i;
-          h = new TH1D(histname,histname,fNBins,fHistXMinimum,fHistXMaximum);
+          if (!fVarBins)
+            h = new TH1D(histname,histname,fNBins,fHistXMinimum,fHistXMaximum);
+          else 
+            h = new TH1D(histname,histname,fNBins,fHistXBins);      
           TString drawexp = fDrawExp + TString(">>") + histname;
           //printf ("Draw(%s, %s);\n",drawexp.Data(),fSelExp.Data());
           htree->Draw(drawexp,fSelExp);
@@ -640,7 +662,11 @@ void PlotTask::FindHistMaximum()
     return;
   
   // Make sure to prepare a temporary histogram to stack contributions according to legend
-  TH1D *hTmp = new TH1D("TMP","TMP",fNBins,fHistXMinimum,fHistXMaximum);
+  TH1D *hTmp = 0;
+  if (!fVarBins)
+    hTmp = new TH1D("TMP","TMP",fNBins,fHistXMinimum,fHistXMaximum);
+  else 
+    hTmp = new TH1D("TMP","TMP",fNBins,fHistXBins);
 
   Bool_t first  = kTRUE;
   for (UInt_t i=0; i<fHists.size(); i++) {

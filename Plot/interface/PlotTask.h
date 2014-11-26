@@ -27,8 +27,14 @@ namespace mithep
     ~PlotTask();
 
     // Define histogram ranges
+    void                 SetVarBins       (bool b)         { fVarBins = b; }
+    void                 SetHistRanges    (const double *d,double xmin,   double xmax,
+                                           double ymin=0, double ymax=0) { 
+                                             fHistXBins = d; 
+                                             fHistXMinimum = xmin; fHistXMaximum = xmax;
+                                             fHistMinimum  = ymin; fHistMaximum  = ymax; }                                             
     void                 SetHistRanges    (double xmin,   double xmax,
-					   double ymin=0, double ymax=0) {
+                                           double ymin=0, double ymax=0) {
                                            fHistXMinimum = xmin; fHistXMaximum = xmax;
                                            fHistMinimum  = ymin; fHistMaximum  = ymax; }
     void                 SetHistMinimum   (double min)     { fHistMinimum = min; }
@@ -87,6 +93,8 @@ namespace mithep
     TH1D*                fDataHist;     // data histogram if it exists
     double               fHistMinimum;  // histogram maximum to be displayed
     double               fHistMaximum;  // histogram minimum to be displayed
+    bool                 fVarBins;      // use variable bins?
+    const double        *fHistXBins;    // histogram x-axis bins lower limits array
     double               fHistXMinimum; // histogram x-axis maximum to be displayed
     double               fHistXMaximum; // histogram x-axis minimum to be displayed
     TString              fAxisTitleX;   // x axis title
