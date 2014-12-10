@@ -28,6 +28,7 @@ namespace mithep
 
     // Define histogram ranges
     void                 SetVarBins       (bool b)         { fVarBins = b; }
+    void                 SetNormToWidth   (bool b)         { fNormToWidth = b; }
     void                 SetHistRanges    (const double *d,double xmin,   double xmax,
                                            double ymin=0, double ymax=0) { 
                                              fHistXBins = d; 
@@ -94,6 +95,7 @@ namespace mithep
     double               fHistMinimum;  // histogram maximum to be displayed
     double               fHistMaximum;  // histogram minimum to be displayed
     bool                 fVarBins;      // use variable bins?
+    bool                 fNormToWidth;  // normalize bin content to width?
     const double        *fHistXBins;    // histogram x-axis bins lower limits array
     double               fHistXMinimum; // histogram x-axis maximum to be displayed
     double               fHistXMaximum; // histogram x-axis minimum to be displayed

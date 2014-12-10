@@ -34,6 +34,7 @@ PlotTask::PlotTask(TaskSamples *taskSamples, const double lumi) :
   fHistMinimum (0),
   fHistMaximum (0),
   fVarBins     (false),
+  fNormToWidth (false),
   fHistXBins   (0),
   fHistXMinimum(0),
   fHistXMaximum(0),
@@ -512,6 +513,12 @@ void PlotTask::ScaleHistograms(const char* hist)
         h = new TH1D(histname,histname,fNBins,fHistXBins);      
       TString drawexp = fDrawExp + TString(">>") + histname;
       htree->Draw(drawexp,fSelExp);
+      // normalize content to width
+      if (fNormToWidth)
+        for (int iBin = 1; iBin <= h->GetNbinsX(); iBin++) {
+          h->SetBinContent(iBin, h->GetBinContent(iBin) / h->GetBinWidth(iBin));
+          h->SetBinError(iBin, h->GetBinError(iBin) / h->GetBinWidth(iBin));
+        }
     }
     
     if (! fEmptyHist) {
@@ -620,6 +627,12 @@ void PlotTask::ScaleHistograms(const char* hist)
           TString drawexp = fDrawExp + TString(">>") + histname;
           //printf ("Draw(%s, %s);\n",drawexp.Data(),fSelExp.Data());
           htree->Draw(drawexp,fSelExp);
+          // normalize content to width
+          if (fNormToWidth)
+            for (int iBin = 1; iBin <= h->GetNbinsX(); iBin++) {
+              h->SetBinContent(iBin, h->GetBinContent(iBin) / h->GetBinWidth(iBin));
+              h->SetBinError(iBin, h->GetBinError(iBin) / h->GetBinWidth(iBin));
+            }
         }
         else
           // rebin it
