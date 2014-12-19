@@ -1074,6 +1074,8 @@ void PlotTask::SaveHistos(const char* obj, const char* out, const char* obs)
   //Open new rootfile
   TString outname = out;
   TString obsname = obs;
+  //Make sure to remove slash from outname
+  obsname = obsname.ReplaceAll("/","DIV");
   TFile* tempout = new TFile(outname+"_"+obsname+".root", "RECREATE");
   tempout->cd();
 
